@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  padding: 10px;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: transparent;
+  overflow: hidden;
+  pointer-events: none; /* Make the background non-clickable */
+}
+
+#notifications-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.notification {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  pointer-events: auto; /* Make notifications clickable */
+}
+
+.notification.removing {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.notification.red {
+  background: #FFEBEE;
+  border-left: 4px solid #F44336;
+}
+
+.notification.yellow {
+  background: #FFF8E1;
+  border-left: 4px solid #FFC107;
+}
+
+.notification.green {
+  background: #E8F5E9;
+  border-left: 4px solid #4CAF50;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.title {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.message {
+  font-size: 0.8em;
+  color: #666;
+}
+.membership {
+  font-size: 11px;
+  margin: 0 0 5px 0;
+  display: inline-block;
+}
+
+.alert {
+  color: #D32F2F;
+  font-weight: 500;
+}
