@@ -99,20 +99,20 @@ fn start_websocket(app_handle: tauri::AppHandle) {
                                             if let Some(message) = data.get("message") {
                                                 // Convert the message to our notification format
                                                 let notification = NotificationData {
-                                                    title: message["member"].as_str().unwrap_or("Unknown").to_string(),
+                                                    title: message["memberName"].as_str().unwrap_or("Unknown").to_string(),
                                                     message: {
                                                         let mut message_parts = Vec::new();
                                                         
-                                                        // Add status message or membership first
-                                                        let status_message = match message["status"].as_i64().unwrap_or(1) {
-                                                            0 => "NO MEMBERSHIP".to_string(),
-                                                            2 => "EXPIRED".to_string(),
-                                                            3 => message["message"].as_str().unwrap_or("").to_string(),
-                                                            1 => format!("<span class=\"membership\">{}</span>", message["membership"].as_str().unwrap_or("")),
-                                                            _ => message["membership"].as_str().unwrap_or("").to_string()
-                                                        };
-                                                        if status_message != "" {
-                                                            message_parts.push(status_message);
+                                                        // Add message text
+                                                        if !message["message"].as_str().unwrap_or("").is_empty() {
+                                                            message_parts.push(message["message"].as_str().unwrap_or("").to_string());
+                                                        }
+                                                        
+                                                        // Add membership if valid
+                                                        if message["membershipValid"].as_bool().unwrap_or(false) && 
+                                                           !message["membership"].as_str().unwrap_or("").is_empty() {
+                                                            message_parts.push(format!("<span class=\"membership\">{}</span>", 
+                                                                message["membership"].as_str().unwrap_or("")));
                                                         }
                                                         
                                                         // Add balance due message if exists
@@ -122,44 +122,24 @@ fn start_websocket(app_handle: tauri::AppHandle) {
                                                         }
                                                         
                                                         // Add red alert if exists
-                                                        if !message["redAlert"].as_str().unwrap_or("").is_empty() {
+                                                        if message["redAlert"].as_bool().unwrap_or(false) && 
+                                                           !message["redAlertTxt"].as_str().unwrap_or("").is_empty() {
                                                             message_parts.push(format!("<span style=\"color: red; font-weight: bold;\">ALERT: </span>{}", 
-                                                                message["redAlert"].as_str().unwrap_or("")));
+                                                                message["redAlertTxt"].as_str().unwrap_or("")));
                                                         }
                                                         
                                                         // Add yellow alert if exists
-                                                        if !message["yellowAlert"].as_str().unwrap_or("").is_empty() {
+                                                        if message["yellowAlert"].as_bool().unwrap_or(false) && 
+                                                           !message["yellowAlertTxt"].as_str().unwrap_or("").is_empty() {
                                                             message_parts.push(format!("<span style=\"color: #bf9500; font-weight: bold;\">WARNING: </span>{}", 
-                                                                message["yellowAlert"].as_str().unwrap_or("")));
+                                                                message["yellowAlertTxt"].as_str().unwrap_or("")));
                                                         }
                                                         
                                                         message_parts.join("<br />")
                                                     },
-                                                    notification_type: {
-                                                        if !message["redAlert"].as_str().unwrap_or("").is_empty() ||
-                                                           message["status"].as_i64().unwrap_or(1) == 0 ||   // Non member
-                                                           message["status"].as_i64().unwrap_or(1) == 2 ||   // Expired
-                                                           message["status"].as_i64().unwrap_or(1) == 3 ||   // Red alert status
-                                                           (message["balanceDue"].as_bool().unwrap_or(false) && 
-                                                            message["balance"].as_f64().unwrap_or(0.0) > 25.0) {
-                                                            "red".to_string()
-                                                        } else if message["status"].as_i64().unwrap_or(1) == 1 && // Must be valid status
-                                                                 (!message["yellowAlert"].as_str().unwrap_or("").is_empty() ||
-                                                                  (message["balanceDue"].as_bool().unwrap_or(false) && 
-                                                                   message["balance"].as_f64().unwrap_or(0.0) <= 25.0)) {
-                                                            "yellow".to_string()
-                                                        } else {
-                                                            "green".to_string()
-                                                        }
-                                                    },
-                                                    requires_interaction: !message["redAlert"].as_str().unwrap_or("").is_empty() ||
-                                                        !message["yellowAlert"].as_str().unwrap_or("").is_empty() ||
-                                                        message["status"].as_i64().unwrap_or(1) == 0 ||   // Non member
-                                                        message["status"].as_i64().unwrap_or(1) == 2 ||   // Expired
-                                                        message["status"].as_i64().unwrap_or(1) == 3 ||   // Red alert status
-                                                        (message["balanceDue"].as_bool().unwrap_or(false) && 
-                                                         message["balance"].as_f64().unwrap_or(0.0) > 25.0),
-                                                    image: message["image"].as_str().map(String::from)
+                                                    notification_type: message["color"].as_str().unwrap_or("green").to_string(),
+                                                    requires_interaction: message["status"].as_i64().unwrap_or(0) < 95,
+                                                    image: message["imageURL"].as_str().map(String::from)
                                                 };
                                                 
                                                 // Show notification
