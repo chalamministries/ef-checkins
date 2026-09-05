@@ -3,6 +3,9 @@ name = "ef-checkins"
 version = "1.0.0"
 edition = "2021"
 
+[package.metadata.tauri]
+config-file = "tauri.conf.json"
+
 [build-dependencies]
 tauri-build = { version = "2.0", features = [] }
 

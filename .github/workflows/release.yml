@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Icons
+        run: npx @tauri-apps/cli@latest icon assets/icons/256x256.png
+
       - name: Build Installer
         run: npx @tauri-apps/cli@latest build --bundles nsis
 
