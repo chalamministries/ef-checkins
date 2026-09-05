@@ -3,7 +3,7 @@
   windows_subsystem = "windows"
 )]
 
-use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayMenuItem, Manager, WindowBuilder, Window};
+use tauri::{Manager, WebviewWindow, Emitter};
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
 use tungstenite::{connect, Message};
@@ -21,8 +21,8 @@ struct NotificationData {
     image: Option<String>
 }
 
-fn ensure_main_window(app: &tauri::AppHandle) -> Result<Window, String> {
-    if let Some(window) = app.get_window("main") {
+fn ensure_main_window(app: &tauri::AppHandle) -> Result<WebviewWindow, String> {
+    if let Some(window) = app.get_webview_window("main") {
         Ok(window)
     } else {
         Err("Main window not found".to_string())
