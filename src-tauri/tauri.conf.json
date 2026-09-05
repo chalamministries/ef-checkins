@@ -2,10 +2,8 @@
   "identifier": "com.elevationfitness.checkins",
   "productName": "EF Checkins",
   "version": "2.0.0",
-  "build": {
-    "distDir": "../src",
-    "devPath": "../src"
-  },
+  "distDir": "../src",
+  "devPath": "../src",
   "app": {
     "windows": [
       {
@@ -20,13 +18,12 @@
         "center": true,
         "focus": true,
         "skipTaskbar": true,
-        "theme": "light",
         "transparent": false
       }
     ]
   },
   "bundle": {
-    "targets": ["windows/nsis"],
+    "targets": "nsis",
     "icon": [
       "../assets/icons/32x32.png",
       "../assets/icons/128x128.png",
