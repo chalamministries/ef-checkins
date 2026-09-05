@@ -1,0 +1,42 @@
+name: Build Windows MSI on Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-msi:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install NSIS
+        run: |
+          choco install nsis --no-progress
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build MSI
+        run: npm run build:msi
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EF-Checkins-MSI
+          path: target/release/bundle/msi/EF\ Checkins_*.msi
+          if-no-files-found: error

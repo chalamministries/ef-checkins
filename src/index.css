@@ -1,0 +1,152 @@
+/* Kiosk-optimized CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0f172a; /* dark blue-gray */
+  color: white;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 90%;
+  max-width: 598px;
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.card.hidden {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+#photo-container {
+  margin-bottom: 1.5rem;
+}
+
+#member-photo {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #334155;
+  background: #334155;
+}
+
+#info h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #f1f5f9;
+}
+
+#info h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #e2e8f0;
+}
+
+#membership {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: #94a3b8;
+}
+
+.alert {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+#red-alert { background: #7f1d1d; color: white; }
+#yellow-alert { background: #ca8a04; color: white; }
+#green-alert { background: #166534; color: white; }
+
+#balance {
+  font-size: 1.125rem;
+  margin-top: 1rem;
+  color: #94a3b8;
+}
+
+#toast-container {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.red { background: #dc2626; color: white; }
+.toast.yellow { background: #d97706; color: white; }
+.toast.green { background: #16a34a; color: white; }
+
+#status-bar {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#status-bar::before {
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 640px) {
+  .card {
+    padding: 1.5rem;
+  }
+  #info h1 { font-size: 2.5rem; }
+  #info h2 { font-size: 1.75rem; }
+}

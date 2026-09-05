@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EF Checkins</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Main display area -->
+    <div id="checkin-card" class="card hidden">
+      <div id="photo-container">
+        <img id="member-photo" src="" alt="Member photo" />
+      </div>
+      <div id="info">
+        <h1 id="welcome-message">WELCOME</h1>
+        <h2 id="member-name">Franklin Griffin</h2>
+        <p id="membership">New Year PIF • Expires: <span id="expires">2027-01-08</span></p>
+        <div id="alerts">
+          <div id="red-alert" class="alert hidden">🔴 <span id="red-alert-text"></span></div>
+          <div id="yellow-alert" class="alert hidden">🟡 <span id="yellow-alert-text"></span></div>
+          <div id="green-alert" class="alert hidden">🟢 <span id="green-alert-text"></span></div>
+        </div>
+        <div id="balance" class="hidden">Balance due: <span id="balance-amount">$0.00</span></div>
+      </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Status bar -->
+    <div id="status-bar">● Online</div>
+  </div>
+
+  <script type="module" src="index.js"></script>
+</body>
+</html>

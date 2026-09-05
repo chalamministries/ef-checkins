@@ -1,51 +1,49 @@
 {
   "build": {
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
-  },
-  "package": {
-    "productName": "EF Checkins",
-    "version": "1.0.1"
+    "devPath": "../src",
+    "distDir": "../src"
   },
   "tauri": {
     "allowlist": {
       "all": false,
-      "window": {
-        "all": true,
-        "create": true,
-        "close": true,
-        "hide": true,
-        "show": true,
-        "maximize": true,
-        "minimize": true,
-        "unmaximize": true,
-        "unminimize": true,
-        "startDragging": true
+      "fs": {
+        "all": false,
+        "readFile": true,
+        "writeFile": false
+      },
+      "http": {
+        "all": false,
+        "request": true
+      },
+      "shell": {
+        "all": false,
+        "open": true
       }
     },
     "bundle": {
       "active": true,
-      "targets": ["dmg", "deb", "msi"],
+      "targets": ["windows/nsis"],
       "identifier": "com.elevationfitness.checkins",
       "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
+        "../assets/icons/32x32.png",
+        "../assets/icons/128x128.png",
+        "../assets/icons/256x256.png"
       ]
     },
-    "security": {
-      "csp": null
-    },
-    "systemTray": {
-      "iconPath": "icons/icon.png",
-      "iconAsTemplate": true
-    },
-    "macOSPrivateApi": true,
-    "windows": []
+    "window": {
+      "title": "EF Checkins",
+      "width": 598,
+      "height": 938,
+      "resizable": false,
+      "fullscreen": false,
+      "decorations": false,
+      "alwaysOnTop": true,
+      "visible": true,
+      "center": true,
+      "focus": true,
+      "skipTaskbar": true,
+      "theme": "light",
+      "transparent": false
+    }
   }
 }
