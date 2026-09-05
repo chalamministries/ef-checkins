@@ -4,12 +4,12 @@
   "version": "2.0.0",
   "identifier": "com.elevationfitness.checkins",
   "build": {
-    "frontendDist": "../src",
-    "devUrl": "../src"
+    "frontendDist": "../src"
   },
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "EF Checkins",
         "width": 598,
         "height": 938,

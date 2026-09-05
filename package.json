@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tauri dev",
     "build": "tauri build",
-    "build:msi": "tauri build --target windows/nsis"
+    "build:msi": "tauri build --bundles nsis"
   },
   "dependencies": {
     "faye": "^1.4.0"

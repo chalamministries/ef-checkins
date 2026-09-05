@@ -31,12 +31,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build MSI
-        run: npx @tauri-apps/cli@latest build --config src-tauri/tauri.conf.json --target windows/nsis
+      - name: Build Installer
+        run: npx @tauri-apps/cli@latest build --bundles nsis
 
-      - name: Upload MSI artifact
+      - name: Upload Installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: EF-Checkins-MSI
-          path: target/release/bundle/msi/EF\ Checkins_*.msi
+          name: EF-Checkins-Installer
+          path: "**/target/release/bundle/nsis/EF Checkins_*.exe"
           if-no-files-found: error
