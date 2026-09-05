@@ -1,49 +1,36 @@
 {
+  "identifier": "com.elevationfitness.checkins",
+  "productName": "EF Checkins",
+  "version": "2.0.0",
   "build": {
-    "devPath": "../src",
-    "distDir": "../src"
+    "distDir": "../src",
+    "devPath": "../src"
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "fs": {
-        "all": false,
-        "readFile": true,
-        "writeFile": false
-      },
-      "http": {
-        "all": false,
-        "request": true
-      },
-      "shell": {
-        "all": false,
-        "open": true
+  "app": {
+    "windows": [
+      {
+        "title": "EF Checkins",
+        "width": 598,
+        "height": 938,
+        "resizable": false,
+        "fullscreen": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "visible": true,
+        "center": true,
+        "focus": true,
+        "skipTaskbar": true,
+        "theme": "light",
+        "transparent": false
       }
-    },
-    "bundle": {
-      "active": true,
-      "targets": ["windows/nsis"],
-      "identifier": "com.elevationfitness.checkins",
-      "icon": [
-        "../assets/icons/32x32.png",
-        "../assets/icons/128x128.png",
-        "../assets/icons/256x256.png"
-      ]
-    },
-    "window": {
-      "title": "EF Checkins",
-      "width": 598,
-      "height": 938,
-      "resizable": false,
-      "fullscreen": false,
-      "decorations": false,
-      "alwaysOnTop": true,
-      "visible": true,
-      "center": true,
-      "focus": true,
-      "skipTaskbar": true,
-      "theme": "light",
-      "transparent": false
-    }
+    ]
+  },
+  "bundle": {
+    "targets": ["windows/nsis"],
+    "icon": [
+      "../assets/icons/32x32.png",
+      "../assets/icons/128x128.png",
+      "../assets/icons/256x256.png"
+    ]
   }
 }
