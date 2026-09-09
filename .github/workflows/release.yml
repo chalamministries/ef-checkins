@@ -20,14 +20,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-
       - name: Install dependencies
-        run: bun install
+        run: npm install
 
       - name: Build Installer
-        run: bun run build:msi
+        run: npm run build:msi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
