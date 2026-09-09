@@ -12,8 +12,8 @@
     "faye": "^1.4.0"
   },
   "devDependencies": {
-    "electron": "^44.3.0",
-    "electron-builder": "^26.15.3"
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
   },
   "build": {
     "appId": "com.elevationfitness.checkins",
