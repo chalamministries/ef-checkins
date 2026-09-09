@@ -19,13 +19,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        run: npm install
+        run: bun install
 
       - name: Build Installer
-        run: npm run build:msi
+        run: bun run build:msi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
