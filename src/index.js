@@ -231,13 +231,6 @@ window.addEventListener('DOMContentLoaded', () => {
   // Hide card initially
   checkinCard.classList.add('hidden');
 
-  // Listen for checkin-data from Rust
-  window.__TAURI__.listen('checkin-data', (event) => {
-    console.log('Received checkin-data:', event.payload);
-    renderPayload(event.payload);
-    const color = event.payload.color || 'green';
-    const msg = event.payload.message || 'Check-in received';
-    showToast(msg, color);
-    playSound(color);
-  });
+  // Tauri listener removed as we are moving to Electron
+  initFaye();
 });

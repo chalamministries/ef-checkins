@@ -2,17 +2,35 @@
   "name": "ef-checkins",
   "version": "1.0.0",
   "description": "EF Checkins Kiosk App - Real-time Faye-powered attendance display",
-  "main": "src/index.js",
+  "main": "main.js",
   "scripts": {
-    "dev": "tauri dev",
-    "build": "tauri build",
-    "build:msi": "tauri build --bundles nsis"
+    "start": "electron .",
+    "build": "electron-builder build --win",
+    "build:msi": "electron-builder build --win msi"
   },
   "dependencies": {
     "faye": "^1.4.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0",
-    "@tauri-apps/api": "^2.0.0"
+    "electron": "^44.3.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.elevationfitness.checkins",
+    "productName": "EF Checkins",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "msi"
+      ],
+      "icon": "assets/icons/256x256.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
