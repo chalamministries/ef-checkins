@@ -29,16 +29,19 @@ jobs:
 
       - name: Determine version
         id: version
+        shell: pwsh
         run: |
-          if [ -n '${{ github.event.inputs.version }}' ]; then
-            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
-            echo "TAG=v${{ github.event.inputs.version }}" >> $GITHUB_ENV
-          else
-            VERSION=$(node -p "require('./package.json').version")
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
-            echo "TAG=v$VERSION" >> $GITHUB_ENV
-          fi
-          echo "RELEASE_NAME=EF Checkins v$VERSION" >> $GITHUB_ENV
+          $versionInput = "${{ github.event.inputs.version }}"
+          if (-not [string]::IsNullOrWhiteSpace($versionInput)) {
+            Write-Output "VERSION=$versionInput" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            Write-Output "TAG=v$versionInput" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          } else {
+            $pkg = Get-Content package.json | ConvertFrom-Json
+            $VERSION = $pkg.version
+            Write-Output "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            Write-Output "TAG=v$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          }
+          Write-Output "RELEASE_NAME=EF Checkins v$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Build installer
         env:
