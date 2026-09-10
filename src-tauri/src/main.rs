@@ -31,12 +31,12 @@ fn ensure_notification_window(app: &tauri::AppHandle) -> Result<Window, String> 
             tauri::WindowUrl::App("notification.html".into())
         )
         .inner_size(320.0, 360.0)
-        .position(1000.0, 20.0)  // Initial position
+        .position(1000.0, 20.0)
         .decorations(false)
         .skip_taskbar(true)
         .always_on_top(true)
         .transparent(true)
-        .visible(false)  // Start hidden
+        .visible(false)
         .build()
         .map_err(|e| e.to_string())?;
 
@@ -56,7 +56,7 @@ fn ensure_notification_window(app: &tauri::AppHandle) -> Result<Window, String> 
 fn start_websocket(app_handle: tauri::AppHandle) {
     thread::spawn(move || {
         let url = Url::parse("wss://faye.chalamministries.com:8999").unwrap();
-        
+
         loop {
             println!("Attempting to connect to WebSocket...");
             match connect(url.clone()) {
@@ -74,7 +74,7 @@ fn start_websocket(app_handle: tauri::AppHandle) {
 
                     // Start time for ping check
                     let mut last_msg_time = std::time::Instant::now();
-                    
+
                     loop {
                         // Check if we need to ping
                         if last_msg_time.elapsed().as_secs() > 30 {
@@ -90,11 +90,11 @@ fn start_websocket(app_handle: tauri::AppHandle) {
                         match socket.read_message() {
                             Ok(message) => {
                                 last_msg_time = std::time::Instant::now();
-                                
+
                                 match message {
                                     Message::Text(text) => {
                                         println!("Received message: {}", text);
-                                        
+
                                         if let Ok(data) = serde_json::from_str::<serde_json::Value>(&text) {
                                             if let Some(message) = data.get("message") {
                                                 // Convert the message to our notification format
@@ -102,46 +102,47 @@ fn start_websocket(app_handle: tauri::AppHandle) {
                                                     title: message["memberName"].as_str().unwrap_or("Unknown").to_string(),
                                                     message: {
                                                         let mut message_parts = Vec::new();
-                                                        
+
                                                         // Add message text
                                                         if !message["message"].as_str().unwrap_or("").is_empty() {
                                                             message_parts.push(message["message"].as_str().unwrap_or("").to_string());
                                                         }
-                                                        
+
                                                         // Add membership if valid
-                                                        if message["membershipValid"].as_bool().unwrap_or(false) && 
+                                                        if message["membershipValid"].as_bool().unwrap_or(false) &&
                                                            !message["membership"].as_str().unwrap_or("").is_empty() {
-                                                            message_parts.push(format!("<span class=\"membership\">{}</span>", 
+                                                            message_parts.push(format!("<span class=\"membership\">{}</span>",
                                                                 message["membership"].as_str().unwrap_or("")));
                                                         }
-                                                        
+
                                                         // Add balance due message if exists
-                                                        if message["balanceDue"].as_bool().unwrap_or(false) {
-                                                            message_parts.push(format!("BALANCE DUE: ${}", 
+                                                        if message["balanceDue"].as_bool().unwrap_or(false) &&
+                                                           message["balance"].as_f64().unwrap_or(0.0) > 0.0 {
+                                                            message_parts.push(format!("BALANCE DUE: ${}",
                                                                 message["balance"].as_f64().unwrap_or(0.0)));
                                                         }
-                                                        
+
                                                         // Add red alert if exists
-                                                        if message["redAlert"].as_bool().unwrap_or(false) && 
+                                                        if message["redAlert"].as_bool().unwrap_or(false) &&
                                                            !message["redAlertTxt"].as_str().unwrap_or("").is_empty() {
-                                                            message_parts.push(format!("<span style=\"color: red; font-weight: bold;\">ALERT: </span>{}", 
+                                                            message_parts.push(format!("<span style=\"color: red; font-weight: bold;\">ALERT: </span>{}",
                                                                 message["redAlertTxt"].as_str().unwrap_or("")));
                                                         }
-                                                        
+
                                                         // Add yellow alert if exists
-                                                        if message["yellowAlert"].as_bool().unwrap_or(false) && 
+                                                        if message["yellowAlert"].as_bool().unwrap_or(false) &&
                                                            !message["yellowAlertTxt"].as_str().unwrap_or("").is_empty() {
-                                                            message_parts.push(format!("<span style=\"color: #bf9500; font-weight: bold;\">WARNING: </span>{}", 
+                                                            message_parts.push(format!("<span style=\"color: #bf9500; font-weight: bold;\">WARNING: </span>{}",
                                                                 message["yellowAlertTxt"].as_str().unwrap_or("")));
                                                         }
-                                                        
+
                                                         message_parts.join("<br />")
                                                     },
                                                     notification_type: message["color"].as_str().unwrap_or("green").to_string(),
                                                     requires_interaction: message["status"].as_i64().unwrap_or(0) < 95,
                                                     image: message["imageURL"].as_str().map(String::from)
                                                 };
-                                                
+
                                                 // Show notification
                                                 if let Ok(window) = ensure_notification_window(&app_handle) {
                                                     let _ = window.emit("notification-data", notification.clone());
@@ -193,8 +194,8 @@ fn start_websocket(app_handle: tauri::AppHandle) {
 }
 
 fn main() {
-    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-    let show = CustomMenuItem::new("show".to_string(), "Show");
+    let quit = CustomMenuItem::new("quit", "Quit");
+    let show = CustomMenuItem::new("show", "Show");
     let tray_menu = SystemTrayMenu::new()
         .add_item(show)
         .add_native_item(SystemTrayMenuItem::Separator)
@@ -204,9 +205,9 @@ fn main() {
 
     tauri::Builder::default()
         .system_tray(system_tray)
-        .setup(move |app| {
+        .setup(|app| {
             let app_handle = app.handle();
-            
+
             // Create main window
             let _main_window = WindowBuilder::new(
                 app,
@@ -225,17 +226,18 @@ fn main() {
         })
         .on_system_tray_event(|app, event| {
             match event {
-                tauri::SystemTrayEvent::LeftClick {
-                    position: _,
-                    size: _,
-                    ..
-                } => {
+                tauri::SystemTrayEvent::LeftClick { .. } => {
                     if let Some(window) = app.get_window("primary") {
-                        if window.is_visible().unwrap() {
-                            window.hide().unwrap();
+                        if let Ok(visible) = window.is_visible() {
+                            if visible {
+                                let _ = window.hide();
+                            } else {
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                            }
                         } else {
-                            window.show().unwrap();
-                            window.set_focus().unwrap();
+                            let _ = window.show();
+                            let _ = window.set_focus();
                         }
                     }
                 }
@@ -245,8 +247,8 @@ fn main() {
                     }
                     "show" => {
                         if let Some(window) = app.get_window("primary") {
-                            window.show().unwrap();
-                            window.set_focus().unwrap();
+                            let _ = window.show();
+                            let _ = window.set_focus();
                         }
                     }
                     _ => {}

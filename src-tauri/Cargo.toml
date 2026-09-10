@@ -7,16 +7,17 @@ license = ""
 repository = ""
 edition = "2021"
 
-[build-dependencies]
-tauri-build = { version = "1.5.0", features = [] }
-
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 chrono = "0.4"
-tauri = { version = "1.5.0", features = [ "macos-private-api", "system-tray", "window-all" ] }
-tungstenite = { version = "0.20.1", features = ["native-tls"] }
-url = "2.4.1"
+tauri = { version = "2", features = ["macos-private-api", "system-tray", "window-all"] }
+tauri-macros = { version = "2" }
+tungstenite = { version = "0.20", features = ["native-tls"] }
+url = "2.4"
+[dependencies.windows-targets]
+version = "0.58"
+features = ["x86_64-pc-windows-msvc"]
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

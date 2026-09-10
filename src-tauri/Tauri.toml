@@ -1,0 +1,31 @@
+[build]
+dev-url = "http://localhost:1420"
+frontend-dist = "../dist"
+
+[package]
+product-name = "EF Checkins"
+version = "1.0.1"
+
+[tauri]
+allowlist.window.all = true
+allowlist.window.create = true
+allowlist.window.close = true
+allowlist.window.hide = true
+allowlist.window.show = true
+allowlist.window.maximize = true
+allowlist.window.minimize = true
+allowlist.window.unmaximize = true
+allowlist.window.unminimize = true
+allowlist.window.start-dragging = true
+
+bundle.active = true
+bundle.targets = ["msi"]
+bundle.identifier = "com.elevationfitness.checkins"
+bundle.icon = ["icons/icon.ico"]
+
+security.csp = ""
+
+system-tray.icon-path = "icons/icon.png"
+system-tray.icon-as-template = true
+
+macos-private-api = true
