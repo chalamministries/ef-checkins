@@ -2,7 +2,6 @@ name: Build & Release Windows Installer
 on:
   push:
     branches: [main]
-    # Optional: auto-create release on annotated git tag
     tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
@@ -19,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required for git tag detection
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -55,7 +54,7 @@ jobs:
           release_name: ${{ env.RELEASE_NAME }}
           body: |
             Windows installer for EF Checkins Kiosk App.
-            
+
             - Built with Electron ${{ steps.electron-version.outputs.version }}
             - electron-builder ${{ steps.builder-version.outputs.version }}
           draft: false
@@ -91,7 +90,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Optional: Print version info for debugging
       - name: Debug: Show versions
         run: |
           echo "📦 Package version: ${{ env.VERSION }}"
