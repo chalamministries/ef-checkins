@@ -1,0 +1,51 @@
+name: Build Windows MSI
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build-msi:
+    name: Build Windows MSI Installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: rust-src, rustfmt, clippy
+
+      - name: Add Windows target
+        run: rustup target add x86_64-pc-windows-msvc
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend (vite)
+        run: npm run build
+
+      - name: Build Tauri app (Windows MSI)
+        working-directory: ./src-tauri
+        run: npx tauri build --target windows-msvc
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ef-checkins-windows-installer
+          path: src-tauri/target/release/bundle/msi/ef-checkins_1.0.1_x64.msi
+          retention-days: 30
