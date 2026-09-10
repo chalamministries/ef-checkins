@@ -2,7 +2,6 @@
 dev-url = "http://localhost:1420"
 frontend-dist = "../dist"
 
-[package]
 product-name = "EF Checkins"
 version = "1.0.1"
 
