@@ -1,5 +1,5 @@
 import { listen } from '@tauri-apps/api/event';
-import { getCurrent } from '@tauri-apps/api/window';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 const container = document.getElementById('notifications-container');
 const notifications = new Map();
@@ -13,7 +13,7 @@ async function removeNotification(id, element) {
   notifications.delete(id);
 
   if (notifications.size === 0) {
-    const appWindow = getCurrent();
+    const appWindow = getCurrentWindow();
     await appWindow.hide();
   }
 }
@@ -41,7 +41,7 @@ function addNotification(data) {
     setTimeout(() => removeNotification(id, div), 4000);
   }
 
-  const appWindow = getCurrent();
+  const appWindow = getCurrentWindow();
   appWindow.show();
 }
 
@@ -52,7 +52,7 @@ function init() {
     addNotification(event.payload);
   });
 
-  const appWindow = getCurrent();
+  const appWindow = getCurrentWindow();
   appWindow.hide();
 }
 
