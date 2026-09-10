@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "EF Checkins Kiosk App - Real-time Faye-powered attendance display",
   "main": "main.js",
+  "author": "EF Kiosk Team",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder build --win",
@@ -23,17 +24,17 @@
     "directories": {
       "output": "dist"
     },
-    "win": {
-      "target": [
-        "nsis",
-        "msi"
-      ],
-      "icon": "assets/icons/256x256.png",
-      "signingHashAlgorithms": "none"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "targets": [
+      {
+        "target": "nsis",
+        "arch": "x64",
+        "icon": "assets/icons/256x256.png"
+      },
+      {
+        "target": "msi",
+        "arch": "x64",
+        "icon": "assets/icons/256x256.png"
+      }
+    ]
   }
 }

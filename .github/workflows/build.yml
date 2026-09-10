@@ -1,0 +1,101 @@
+name: Build & Release Windows Installer
+on:
+  push:
+    branches: [main]
+    # Optional: auto-create release on annotated git tag
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. "1.0.0") — leave blank to auto-detect from package.json'
+        required: false
+        default: ''
+
+jobs:
+  build-and-release:
+    name: Build and Publish Release
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for git tag detection
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ -n '${{ github.event.inputs.version }}' ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+            echo "TAG=v${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          else
+            VERSION=$(node -p "require('./package.json').version")
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+            echo "TAG=v$VERSION" >> $GITHUB_ENV
+          fi
+          echo "RELEASE_NAME=EF Checkins v$VERSION" >> $GITHUB_ENV
+
+      - name: Build installer
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npm run build:msi
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ env.TAG }}
+          release_name: ${{ env.RELEASE_NAME }}
+          body: |
+            Windows installer for EF Checkins Kiosk App.
+            
+            - Built with Electron ${{ steps.electron-version.outputs.version }}
+            - electron-builder ${{ steps.builder-version.outputs.version }}
+          draft: false
+          prerelease: false
+
+      - name: Upload artifacts to release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/*.exe
+          asset_name: EF-Checkins-${{ env.VERSION }}-Setup.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload MSI to release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/*.msi
+          asset_name: EF-Checkins-${{ env.VERSION }}.msi
+          asset_content_type: application/x-msdownload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Squirrel package (optional)
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/*.nupkg
+          asset_name: EF-Checkins-${{ env.VERSION }}-full.nupkg
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Optional: Print version info for debugging
+      - name: Debug: Show versions
+        run: |
+          echo "📦 Package version: ${{ env.VERSION }}"
+          echo "🏷️  Tag: ${{ env.TAG }}"
+          echo "📝 Release name: ${{ env.RELEASE_NAME }}"
+          echo "📁 Artifacts in dist/: $(ls -1 dist/ | tr '\n' ' ')"
+        shell: bash
