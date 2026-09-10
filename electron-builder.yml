@@ -1,0 +1,13 @@
+appId: com.elevationfitness.checkins
+productName: EF Checkins
+directories:
+  output: dist
+win:
+  target:
+    - nsis
+    - msi
+  icon: assets/icons/256x256.png
+  publisherName: EF Kiosk Team
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

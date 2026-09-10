@@ -15,7 +15,7 @@
   "devDependencies": {
     "canvas": "^3.2.3",
     "electron": "^33.0.0",
-    "electron-builder": "26.15.3",
+    "electron-builder": "25.1.8",
     "png-to-ico": "^3.0.2"
   },
   "build": {
@@ -24,17 +24,14 @@
     "directories": {
       "output": "dist"
     },
-    "targets": [
-      {
-        "target": "nsis",
-        "arch": "x64",
-        "icon": "assets/icons/256x256.png"
-      },
-      {
-        "target": "msi",
-        "arch": "x64",
-        "icon": "assets/icons/256x256.png"
-      }
-    ]
+    "win": {
+      "target": ["nsis", "msi"],
+      "icon": "assets/icons/256x256.png",
+      "publisherName": "EF Kiosk Team"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
